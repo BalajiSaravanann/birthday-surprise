@@ -1,180 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Happy Birthday 🎉</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
-  <!-- Confetti Library -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    body {
-      height: 100vh;
-      overflow: hidden;
-      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee);
-      background-size: 400% 400%;
-      animation: gradientMove 12s ease infinite;
-    }
-
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Page open animation */
-    .container {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
-      color: #fff;
-      animation: pageOpen 1.5s ease forwards;
-      opacity: 0;
-      transform: scale(0.9);
-    }
-
-    @keyframes pageOpen {
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      text-shadow: 0 0 15px rgba(255,255,255,0.6);
-    }
-
-    p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-    }
-
-    button {
-      padding: 12px 28px;
-      border: none;
-      border-radius: 30px;
-      font-size: 1rem;
-      cursor: pointer;
-      background: #fff;
-      color: #ff4e78;
-      transition: all 0.3s ease;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
-
-    button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 20px #fff;
-    }
-
-    /* Heart pop */
-    .heart {
-      position: absolute;
-      font-size: 20px;
-      animation: heartPop 1s ease forwards;
-      pointer-events: none;
-    }
-
-    @keyframes heartPop {
-      0% { transform: scale(0); opacity: 1; }
-      100% { transform: scale(2); opacity: 0; top: -50px; }
-    }
-
-    /* Balloons */
-    .balloon {
-      position: absolute;
-      bottom: -100px;
-      width: 40px;
-      height: 55px;
-      border-radius: 50%;
-      animation: floatUp linear infinite;
-    }
-
-    .balloon::after {
-      content: '';
-      position: absolute;
-      width: 2px;
-      height: 25px;
-      background: #fff;
-      top: 55px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    @keyframes floatUp {
-      from { transform: translateY(0); }
-      to { transform: translateY(-120vh); }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Surprise</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div class="container">
-    <h1>🎂 Happy Birthday 🎂</h1>
-    <p>Wishing you endless smiles & happiness 💖</p>
-    <button onclick="blastConfetti()">Celebrate 🎉</button>
+  <!-- Floating hearts container -->
+  <div class="hearts"></div>
+
+  <div class="card">
+    <div class="special">A very special day</div>
+
+    <h1 class="title">Happy Birthday 🎂</h1>
+    <h2 class="name">AVA NAME</h2>
+
+    <p class="msg fade">
+      Today is more than just your birthday.  
+      It’s a reminder of how important you are in my life 🤍
+    </p>
+
+    <p class="msg fade">
+      You’ve been my thangachi, my bestest friend,  
+      my strength during weak days,  
+      and my motivator 👼
+    </p>
+
+    <p class="msg fade">
+      No matter what happens in life,  
+      Your Balaji Anney will always be there for you 🖤
+    </p>
+
+    <div class="player">
+      <p>🎧 Tap to play music</p>
+      <audio id="audio" controls loop>
+        <source src="music.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <p class="footer">Made with love & respect 🤍</p>
   </div>
 
-  <script>
-    /* Confetti on page load */
-    window.onload = () => {
-      blastConfetti();
-      createBalloons();
-    };
-
-    function blastConfetti() {
-      confetti({
-        particleCount: 180,
-        spread: 80,
-        origin: { y: 0.6 }
-      });
-    }
-
-    /* Heart pop on click */
-    document.addEventListener('click', (e) => {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.innerHTML = '❤️';
-      heart.style.left = e.clientX + 'px';
-      heart.style.top = e.clientY + 'px';
-      document.body.appendChild(heart);
-
-      setTimeout(() => heart.remove(), 1000);
-    });
-
-    /* Floating balloons */
-    function createBalloons() {
-      const colors = ['#ff4e78', '#ffd166', '#6a4cff', '#4ecdc4'];
-
-      for (let i = 0; i < 12; i++) {
-        const balloon = document.createElement('div');
-        balloon.className = 'balloon';
-        balloon.style.left = Math.random() * 100 + 'vw';
-        balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
-        balloon.style.animationDuration = (6 + Math.random() * 6) + 's';
-        document.body.appendChild(balloon);
-
-        setTimeout(() => balloon.remove(), 12000);
-      }
-
-      setTimeout(createBalloons, 4000);
-    }
-  </script>
-
+  <script src="script.js"></script>
 </body>
 </html>
