@@ -1,39 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Birthday Surprise</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Special</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
+
+body{
+  background:linear-gradient(135deg,#6f6bdc,#8b82e6);
+  color:white;
+  overflow-x:hidden;
+}
+
+/* ---------------- TOP CARD ---------------- */
+
+.card{
+  margin:80px auto;
+  background:rgba(255,255,255,0.18);
+  backdrop-filter:blur(10px);
+  padding:30px;
+  border-radius:20px;
+  width:90%;
+  max-width:420px;
+  text-align:center;
+  animation:pop 1s ease;
+}
+
+.special{font-size:13px;letter-spacing:2px;margin-bottom:8px;}
+
+@keyframes pop{
+  from{transform:scale(0.9);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+
+/* ---------------- HEART SECTION ---------------- */
+
+.heart-section{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  opacity:0;
+  transform:translateY(80px);
+  transition:1.5s ease;
+}
+
+.heart-section.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.heart-wrapper{
+  position:relative;
+  width:420px;
+  height:380px;
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.05);}
+  100%{transform:scale(1);}
+}
+
+svg{position:absolute;width:100%;height:100%;}
+
+.heart-path{
+  fill:none;
+  stroke:white;
+  stroke-width:4;
+  stroke-dasharray:1500;
+  stroke-dashoffset:1500;
+  animation:draw 4s ease forwards;
+}
+
+@keyframes draw{
+  to{stroke-dashoffset:0;}
+}
+
+.timer-content{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+
+#timer{line-height:1.6;font-size:18px;}
+
+/* ---------------- PETALS ---------------- */
+
+.petal{
+  position:fixed;
+  top:-20px;
+  font-size:20px;
+  opacity:0.7;
+  animation:petalFall linear infinite;
+}
+
+@keyframes petalFall{
+  to{transform:translateY(110vh) rotate(360deg);}
+}
+
+/* ---------------- FIREWORKS ---------------- */
+
+#fireworksCanvas{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:999;
+}
+</style>
 </head>
+
 <body>
 
-  <!-- Animations layer -->
-  <div class="hearts"></div>
-  <div class="balloons"></div>
-  <div class="confetti"></div>
+<canvas id="fireworksCanvas"></canvas>
 
-  <!-- Content -->
-  <div class="card">
-    <div class="special">A very special day</div>
+<!-- Hidden Auto Music -->
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
 
-    <h1>Happy Birthday 🎂</h1>
-    <h2>AVA NAME</h2>
+<div class="card">
+  <div class="special">A very special day</div>
+  <h1>Happy Birthday 🎂</h1>
+  <h2>AVA NAME</h2>
+  <p>You are my thangachi, my best friend, my strength and my motivation 👼</p>
+  <p>Your anna will always be with you 🖤</p>
+</div>
 
-    <p>
-      You are my thangachi, my best friend,  
-      my strength and my motivation 👼
-    </p>
-
-    <p>
-      Your anna will always be with you 🖤
-    </p>
-
-    <audio controls loop>
-      <source src="music.mp3" type="audio/mpeg">
-    </audio>
+<div class="heart-section">
+  <div class="heart-wrapper">
+    <svg viewBox="0 0 512 512">
+      <path class="heart-path"
+        d="M256 472
+           L56 272
+           A120 120 0 0 1 256 120
+           A120 120 0 0 1 456 272
+           Z"/>
+    </svg>
+    <div class="timer-content">
+      <h3>So, En Thangachii ku ♡</h3>
+      <div id="timer"></div>
+    </div>
   </div>
+</div>
 
-  <script src="script.js"></script>
+<script>
+
+/* ---------------- AUTO PLAY MUSIC ---------------- */
+
+const music=document.getElementById("bgMusic");
+
+window.addEventListener("load",()=>{
+  music.volume=0.6;
+  music.play().catch(()=>{
+    document.body.addEventListener("click",()=>{
+      music.play();
+    },{once:true});
+  });
+});
+
+/* ---------------- PETALS ---------------- */
+
+for(let i=0;i<25;i++){
+  let p=document.createElement("div");
+  p.className="petal";
+  p.innerHTML="🌸";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=(6+Math.random()*6)+"s";
+  p.style.fontSize=(15+Math.random()*20)+"px";
+  document.body.appendChild(p);
+}
+
+/* ---------------- SCROLL FADE ---------------- */
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add("show");}
+  });
+},{threshold:0.3});
+
+observer.observe(document.querySelector(".heart-section"));
+
+/* ---------------- TIMER ---------------- */
+
+let birthDate=new Date("February 28, 2004 23:50:00").getTime();
+
+function updateTimer(){
+  let now=new Date().getTime();
+  let diff=now-birthDate;
+  let s=Math.floor(diff/1000)%60;
+  let m=Math.floor(diff/(1000*60))%60;
+  let h=Math.floor(diff/(1000*60*60))%24;
+  let d=Math.floor(diff/(1000*60*60*24));
+
+  document.getElementById("timer").innerHTML=
+    d+" Days<br>"+h+" Hours<br>"+m+" Minutes<br>"+s+" Seconds";
+}
+
+setInterval(updateTimer,1000);
+updateTimer();
+
+/* ---------------- FIREWORKS 12:05 PM ---------------- */
+
+const canvas=document.getElementById("fireworksCanvas");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+
+function createFirework(x,y){
+  for(let i=0;i<80;i++){
+    particles.push({
+      x,y,
+      angle:Math.random()*2*Math.PI,
+      speed:Math.random()*5+2,
+      radius:2
+    });
+  }
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach((p,i)=>{
+    p.x+=Math.cos(p.angle)*p.speed;
+    p.y+=Math.sin(p.angle)*p.speed;
+    p.speed*=0.96;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+    ctx.fillStyle="white";
+    ctx.fill();
+    if(p.speed<0.5)particles.splice(i,1);
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+setInterval(()=>{
+  let now=new Date();
+  if(now.getHours()===12 && now.getMinutes()===5 && now.getSeconds()===0){
+    for(let i=0;i<6;i++){
+      createFirework(Math.random()*canvas.width,Math.random()*canvas.height/2);
+    }
+  }
+},1000);
+
+</script>
+
 </body>
 </html>
