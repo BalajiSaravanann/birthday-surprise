@@ -35,8 +35,7 @@ body{
   to{transform:scale(1);opacity:1;}
 }
 
-/* ---- Transparent Play Button ---- */
-
+/* Transparent Play Button */
 #playBtn{
   margin:15px auto 0;
   display:none;
@@ -50,7 +49,6 @@ body{
   font-size:14px;
   transition:0.3s;
 }
-
 #playBtn:hover{
   background:rgba(255,255,255,0.3);
 }
@@ -111,17 +109,17 @@ svg{position:absolute;width:100%;height:100%;}
 
 #timer{line-height:1.6;font-size:18px;}
 
-/* ---------------- PETALS ---------------- */
+/* ---------------- FALLING HEARTS ---------------- */
 
-.petal{
+.fall-heart{
   position:fixed;
   top:-20px;
   font-size:20px;
-  opacity:0.7;
-  animation:petalFall linear infinite;
+  opacity:0.8;
+  animation:fall linear infinite;
 }
 
-@keyframes petalFall{
+@keyframes fall{
   to{transform:translateY(110vh) rotate(360deg);}
 }
 
@@ -153,7 +151,6 @@ svg{position:absolute;width:100%;height:100%;}
   <h2>AVA NAME</h2>
   <p>You are my thangachi, my best friend, my strength and my motivation 👼</p>
   <p>Your anna will always be with you 🖤</p>
-
   <button id="playBtn">▶ Play Music</button>
 </div>
 
@@ -176,7 +173,7 @@ svg{position:absolute;width:100%;height:100%;}
 
 <script>
 
-/* -------- MUSIC -------- */
+/* -------- AUTO MUSIC -------- */
 
 const music=document.getElementById("bgMusic");
 const playBtn=document.getElementById("playBtn");
@@ -193,17 +190,20 @@ playBtn.addEventListener("click",()=>{
   playBtn.style.display="none";
 });
 
-/* -------- PETALS -------- */
+/* -------- FALLING BLACK & WHITE HEARTS -------- */
 
-for(let i=0;i<25;i++){
-  let p=document.createElement("div");
-  p.className="petal";
-  p.innerHTML="🌸";
-  p.style.left=Math.random()*100+"vw";
-  p.style.animationDuration=(6+Math.random()*6)+"s";
-  p.style.fontSize=(15+Math.random()*20)+"px";
-  document.body.appendChild(p);
+function createHeart(){
+  let h=document.createElement("div");
+  h.className="fall-heart";
+  h.innerHTML=Math.random()>0.5?"🖤":"🤍";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=(5+Math.random()*6)+"s";
+  h.style.fontSize=(16+Math.random()*18)+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),11000);
 }
+
+setInterval(createHeart,800);
 
 /* -------- SCROLL FADE -------- */
 
@@ -230,7 +230,6 @@ function updateTimer(){
   document.getElementById("timer").innerHTML=
     d+" Days<br>"+h+" Hours<br>"+m+" Minutes<br>"+s+" Seconds";
 }
-
 setInterval(updateTimer,1000);
 updateTimer();
 
@@ -248,8 +247,7 @@ function createFirework(x,y){
     particles.push({
       x,y,
       angle:Math.random()*2*Math.PI,
-      speed:Math.random()*5+2,
-      radius:2
+      speed:Math.random()*5+2
     });
   }
 }
@@ -261,7 +259,7 @@ function animate(){
     p.y+=Math.sin(p.angle)*p.speed;
     p.speed*=0.96;
     ctx.beginPath();
-    ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+    ctx.arc(p.x,p.y,2,0,Math.PI*2);
     ctx.fillStyle="white";
     ctx.fill();
     if(p.speed<0.5)particles.splice(i,1);
@@ -280,6 +278,5 @@ setInterval(()=>{
 },1000);
 
 </script>
-
 </body>
 </html>
