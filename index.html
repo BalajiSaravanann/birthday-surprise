@@ -8,7 +8,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
 
-/* ---------------- BODY WITH FULL SCREEN IMAGE ---------------- */
 body{
   background: 
     linear-gradient(135deg, rgba(111,107,220,0.6), rgba(139,130,230,0.6)),
@@ -18,8 +17,7 @@ body{
   overflow-x:hidden;
 }
 
-/* ---------------- TOP CARD ---------------- */
-
+/* CARD */
 .card{
   margin:80px auto;
   background:rgba(255,255,255,0.18);
@@ -32,32 +30,12 @@ body{
   animation:pop 1s ease;
 }
 
-.special{font-size:13px;letter-spacing:2px;margin-bottom:8px;}
-
 @keyframes pop{
   from{transform:scale(0.9);opacity:0;}
   to{transform:scale(1);opacity:1;}
 }
 
-/* Transparent Play Button */
-#playBtn{
-  margin:15px auto 0;
-  display:none;
-  padding:10px 20px;
-  border-radius:25px;
-  border:1px solid rgba(255,255,255,0.6);
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(8px);
-  color:white;
-  cursor:pointer;
-  font-size:14px;
-  transition:0.3s;
-}
-#playBtn:hover{
-  background:rgba(255,255,255,0.3);
-}
-
-/* ---------------- HEART SECTION ---------------- */
+/* HEART SECTION */
 
 .heart-section{
   height:100vh;
@@ -77,30 +55,14 @@ body{
 
 .heart-wrapper{
   position:relative;
-  width:420px;
-  height:380px;
-  animation:pulse 2s infinite;
+  width:500px;
+  height:500px;
 }
 
-@keyframes pulse{
-  0%{transform:scale(1);}
-  50%{transform:scale(1.05);}
-  100%{transform:scale(1);}
-}
-
-svg{position:absolute;width:100%;height:100%;}
-
-.heart-path{
-  fill:none;
-  stroke:white;
-  stroke-width:4;
-  stroke-dasharray:1500;
-  stroke-dashoffset:1500;
-  animation:draw 4s ease forwards;
-}
-
-@keyframes draw{
-  to{stroke-dashoffset:0;}
+#pinkboard{
+  position:absolute;
+  width:100%;
+  height:100%;
 }
 
 .timer-content{
@@ -109,68 +71,29 @@ svg{position:absolute;width:100%;height:100%;}
   left:50%;
   transform:translate(-50%,-50%);
   text-align:center;
+  z-index:10;
 }
 
-#timer{line-height:1.6;font-size:18px;}
-
-/* ---------------- FALLING HEARTS ---------------- */
-
-.fall-heart{
-  position:fixed;
-  top:-20px;
-  font-size:20px;
-  opacity:0.8;
-  animation:fall linear infinite;
-}
-
-@keyframes fall{
-  to{transform:translateY(110vh) rotate(360deg);}
-}
-
-/* ---------------- FIREWORKS ---------------- */
-
-#fireworksCanvas{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:999;
+#timer{
+  line-height:1.6;
+  font-size:18px;
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="fireworksCanvas"></canvas>
-
-<audio id="bgMusic" loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
-
 <div class="card">
-  <div class="special">Special Wishes from AKB_ Fam</div>
   <h1>🧚 Happy Birthday Thangachii 🧚</h1>
   <h2>Athifa Kouser A</h2>
-  <p>Thangachii, INIYA PIRANDHA NAAL NALVAZHTHUKAL. Daii, apro vera enna wish panradhunu thrla daa🤣. Ana na epaum solradhu dha daa; Ne epaum sandhosama smiley face oda iru , romba romba mukiyama healthy ah iru😌.</p>
-  <p>2026 Namadhey😌</p>
   <p>Your anna will always be with you 🖤</p>
-  <button id="playBtn">▶ Play Music</button>
 </div>
 
 <div class="heart-section">
   <div class="heart-wrapper">
-    <svg viewBox="0 0 512 512">
-      <path class="heart-path"
-        d="M256 472
-           L56 272
-           A120 120 0 0 1 256 120
-           A120 120 0 0 1 456 272
-           Z"/>
-    </svg>
+    <canvas id="pinkboard"></canvas>
     <div class="timer-content">
-      <h3>So, En Thangachii ku ♡</h3>
+      <h3>En Thangachii 🧚🏻‍♀️</h3>
       <div id="timer"></div>
     </div>
   </div>
@@ -178,49 +101,193 @@ svg{position:absolute;width:100%;height:100%;}
 
 <script>
 
-/* -------- AUTO MUSIC -------- */
-
-const music=document.getElementById("bgMusic");
-const playBtn=document.getElementById("playBtn");
-
-window.addEventListener("load",()=>{ 
-  music.volume=0.6;
-  music.play().catch(()=>{
-    playBtn.style.display="block";
-  });
+/* SHOW HEART SECTION */
+window.addEventListener("load", function(){
+  document.querySelector(".heart-section").classList.add("show");
 });
 
-playBtn.addEventListener("click",()=>{
-  music.play();
-  playBtn.style.display="none";
-});
+/* PARTICLE HEART ENGINE */
 
-/* -------- FALLING BLACK & WHITE HEARTS -------- */
+var settings = {
+  particles:{ length:500,duration:2,velocity:100,effect:-0.75,size:30 }
+};
 
-function createHeart(){
-  let h=document.createElement("div");
-  h.className="fall-heart";
-  h.innerHTML=Math.random()>0.5?"🖤":"🤍";
-  h.style.left=Math.random()*100+"vw";
-  h.style.animationDuration=(5+Math.random()*6)+"s";
-  h.style.fontSize=(16+Math.random()*18)+"px";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),11000);
-}
+(function(){
+  var canvas = document.getElementById("pinkboard");
+  var context = canvas.getContext("2d");
 
-setInterval(createHeart,800);
+  function resize(){
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  window.addEventListener("resize",resize);
+  resize();
 
-/* -------- SCROLL FADE -------- */
+  function Point(x,y){ this.x=x||0; this.y=y||0; }
+  Point.prototype.clone=function(){ return new Point(this.x,this.y); }
+  Point.prototype.length=function(length){
+    if(length===undefined)
+      return Math.sqrt(this.x*this.x+this.y*this.y);
+    this.normalize();
+    this.x*=length; this.y*=length;
+    return this;
+  }
+  Point.prototype.normalize=function(){
+    var length=this.length();
+    this.x/=length; this.y/=length;
+    return this;
+  }
 
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){e.target.classList.add("show");}
-  });
-},{threshold:0.3});
+  function Particle(){
+    this.position=new Point();
+    this.velocity=new Point();
+    this.acceleration=new Point();
+    this.age=0;
+  }
 
-observer.observe(document.querySelector(".heart-section"));
+  Particle.prototype.initialize=function(x,y,dx,dy){
+    this.position.x=x;
+    this.position.y=y;
+    this.velocity.x=dx;
+    this.velocity.y=dy;
+    this.acceleration.x=dx*settings.particles.effect;
+    this.acceleration.y=dy*settings.particles.effect;
+    this.age=0;
+  }
 
-/* -------- TIMER -------- */
+  Particle.prototype.update=function(deltaTime){
+    this.position.x+=this.velocity.x*deltaTime;
+    this.position.y+=this.velocity.y*deltaTime;
+    this.velocity.x+=this.acceleration.x*deltaTime;
+    this.velocity.y+=this.acceleration.y*deltaTime;
+    this.age+=deltaTime;
+  }
+
+  Particle.prototype.draw=function(context,image){
+    function ease(t){ return (--t)*t*t+1; }
+    var size=image.width*ease(this.age/settings.particles.duration);
+    context.globalAlpha=1-this.age/settings.particles.duration;
+    context.drawImage(image,
+      this.position.x-size/2,
+      this.position.y-size/2,
+      size,size);
+  }
+
+  function ParticlePool(length){
+    this.particles=new Array(length);
+    for(var i=0;i<length;i++)
+      this.particles[i]=new Particle();
+    this.firstActive=0;
+    this.firstFree=0;
+  }
+
+  ParticlePool.prototype.add=function(x,y,dx,dy){
+    this.particles[this.firstFree].initialize(x,y,dx,dy);
+    this.firstFree=(this.firstFree+1)%this.particles.length;
+    if(this.firstActive==this.firstFree)
+      this.firstActive=(this.firstActive+1)%this.particles.length;
+  }
+
+  ParticlePool.prototype.update=function(deltaTime){
+    if(this.firstActive<this.firstFree){
+      for(var i=this.firstActive;i<this.firstFree;i++)
+        this.particles[i].update(deltaTime);
+    }else{
+      for(var i=this.firstActive;i<this.particles.length;i++)
+        this.particles[i].update(deltaTime);
+      for(var i=0;i<this.firstFree;i++)
+        this.particles[i].update(deltaTime);
+    }
+
+    while(this.particles[this.firstActive].age>=settings.particles.duration
+          && this.firstActive!=this.firstFree){
+      this.firstActive=(this.firstActive+1)%this.particles.length;
+    }
+  }
+
+  ParticlePool.prototype.draw=function(context,image){
+    if(this.firstActive<this.firstFree){
+      for(var i=this.firstActive;i<this.firstFree;i++)
+        this.particles[i].draw(context,image);
+    }else{
+      for(var i=this.firstActive;i<this.particles.length;i++)
+        this.particles[i].draw(context,image);
+      for(var i=0;i<this.firstFree;i++)
+        this.particles[i].draw(context,image);
+    }
+  }
+
+  function pointOnHeart(t){
+    return new Point(
+      160*Math.pow(Math.sin(t),3),
+      130*Math.cos(t)
+      -50*Math.cos(2*t)
+      -20*Math.cos(3*t)
+      -10*Math.cos(4*t)+25
+    );
+  }
+
+  var image=(function(){
+    var canvas=document.createElement("canvas");
+    var ctx=canvas.getContext("2d");
+    canvas.width=settings.particles.size;
+    canvas.height=settings.particles.size;
+
+    function to(t){
+      var p=pointOnHeart(t);
+      p.x=settings.particles.size/2+p.x*settings.particles.size/350;
+      p.y=settings.particles.size/2-p.y*settings.particles.size/350;
+      return p;
+    }
+
+    ctx.beginPath();
+    var t=-Math.PI;
+    var p=to(t);
+    ctx.moveTo(p.x,p.y);
+    while(t<Math.PI){
+      t+=0.01;
+      p=to(t);
+      ctx.lineTo(p.x,p.y);
+    }
+    ctx.closePath();
+    ctx.fillStyle="#ff2da0";
+    ctx.fill();
+
+    var img=new Image();
+    img.src=canvas.toDataURL();
+    return img;
+  })();
+
+  var particles=new ParticlePool(settings.particles.length);
+  var particleRate=settings.particles.length/settings.particles.duration;
+  var time;
+
+  function render(){
+    requestAnimationFrame(render);
+    var newTime=new Date().getTime()/1000;
+    var deltaTime=newTime-(time||newTime);
+    time=newTime;
+
+    context.clearRect(0,0,canvas.width,canvas.height);
+
+    var amount=particleRate*deltaTime;
+    for(var i=0;i<amount;i++){
+      var pos=pointOnHeart(Math.PI-2*Math.PI*Math.random());
+      var dir=pos.clone().length(settings.particles.velocity);
+      particles.add(
+        canvas.width/2+pos.x,
+        canvas.height/2-pos.y,
+        dir.x,-dir.y);
+    }
+
+    particles.update(deltaTime);
+    particles.draw(context,image);
+  }
+
+  render();
+})();
+
+/* TIMER */
 
 let birthDate=new Date("February 28, 2004 23:50:00").getTime();
 
@@ -237,50 +304,6 @@ function updateTimer(){
 }
 setInterval(updateTimer,1000);
 updateTimer();
-
-/* -------- FIREWORKS -------- */
-
-const canvas=document.getElementById("fireworksCanvas");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let particles=[];
-
-function createFirework(x,y){
-  for(let i=0;i<80;i++){
-    particles.push({
-      x,y,
-      angle:Math.random()*2*Math.PI,
-      speed:Math.random()*5+2
-    });
-  }
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach((p,i)=>{
-    p.x+=Math.cos(p.angle)*p.speed;
-    p.y+=Math.sin(p.angle)*p.speed;
-    p.speed*=0.96;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,2,0,Math.PI*2);
-    ctx.fillStyle="white";
-    ctx.fill();
-    if(p.speed<0.5)particles.splice(i,1);
-  });
-  requestAnimationFrame(animate);
-}
-animate();
-
-setInterval(()=>{
-  let now=new Date();
-  if(now.getHours()===12 && now.getMinutes()===5 && now.getSeconds()===0){
-    for(let i=0;i<6;i++){
-      createFirework(Math.random()*canvas.width,Math.random()*canvas.height/2);
-    }
-  }
-},1000);
 
 </script>
 </body>
