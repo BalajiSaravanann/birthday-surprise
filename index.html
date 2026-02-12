@@ -8,8 +8,12 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
 
+/* ---------------- BODY WITH FULL SCREEN IMAGE ---------------- */
 body{
-  background:linear-gradient(135deg,#6f6bdc,#8b82e6);
+  background: 
+    linear-gradient(135deg, rgba(111,107,220,0.6), rgba(139,130,230,0.6)),
+    url('background.png') no-repeat center center fixed;
+  background-size: cover;
   color:white;
   overflow-x:hidden;
 }
@@ -179,7 +183,7 @@ svg{position:absolute;width:100%;height:100%;}
 const music=document.getElementById("bgMusic");
 const playBtn=document.getElementById("playBtn");
 
-window.addEventListener("load",()=>{
+window.addEventListener("load",()=>{ 
   music.volume=0.6;
   music.play().catch(()=>{
     playBtn.style.display="block";
@@ -234,7 +238,7 @@ function updateTimer(){
 setInterval(updateTimer,1000);
 updateTimer();
 
-/* -------- FIREWORKS 12:05 PM -------- */
+/* -------- FIREWORKS -------- */
 
 const canvas=document.getElementById("fireworksCanvas");
 const ctx=canvas.getContext("2d");
@@ -281,5 +285,3 @@ setInterval(()=>{
 </script>
 </body>
 </html>
-
-
