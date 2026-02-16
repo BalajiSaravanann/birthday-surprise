@@ -45,6 +45,25 @@ body{
   to{transform:scale(1);opacity:1;}
 }
 
+/* -------- TITLE SINGLE LINE -------- */
+.main-title{
+  font-size:clamp(20px,4vw,28px);
+  white-space:nowrap;
+}
+
+/* -------- HINT MESSAGE -------- */
+#hintMessage{
+  margin-top:8px;
+  font-size:14px;
+  opacity:0.9;
+  transition:0.5s ease;
+}
+
+.fade-out{
+  opacity:0;
+  transform:translateY(-5px);
+}
+
 /* ---------- TYPING TEXT ---------- */
 #typingText{
   margin-top:15px;
@@ -182,8 +201,13 @@ svg{
 
 <div class="card">
   <div class="special">Special Wishes from AKB_ Fam</div>
-  <h1>🧚 Happy Birthday Thangachii 🧚</h1>
+
+  <h1 class="main-title">🧚 Happy Birthday Thangachii 🧚</h1>
   <h2>Athifa Kouser A</h2>
+
+  <div id="hintMessage">
+    Enna da pakura, screen scroll panama play music button press panu 😅
+  </div>
 
   <p id="typingText"></p>
 
@@ -210,10 +234,10 @@ svg{
 
 <script>
 
-/* -------- MUSIC + TYPING START TOGETHER -------- */
 const music=document.getElementById("bgMusic");
 const playBtn=document.getElementById("playBtn");
 const typingElement=document.getElementById("typingText");
+const hint=document.getElementById("hintMessage");
 
 const message = `Thangachii, INIYA PIRANDHA NAAL NALVAZHTHUKAL. Daii, apro vera enna wish panradhunu thrla daa🤣.
 Ana na epaum solradhu dha daa; Ne epaum sandhosama smiley face oda iru,
@@ -228,7 +252,7 @@ function typeWriter(){
   if(charIndex < message.length){
     typingElement.innerHTML += message.charAt(charIndex);
     charIndex++;
-    setTimeout(typeWriter,120);   // 🔥 40% speed (slow typing)
+    setTimeout(typeWriter,120);
   }else{
     typingElement.innerHTML += '<span class="cursor"></span>';
   }
@@ -239,13 +263,16 @@ playBtn.addEventListener("click",()=>{
   music.play();
   playBtn.style.display="none";
 
+  hint.classList.add("fade-out");
+  setTimeout(()=>hint.style.display="none",500);
+
   if(!typingStarted){
     typingStarted=true;
-    typeWriter();  // 🔥 typing starts exactly when music starts
+    typeWriter();
   }
 });
 
-/* -------- FALLING HEARTS -------- */
+/* hearts */
 function createHeart(){
   let h=document.createElement("div");
   h.className="fall-heart";
@@ -258,7 +285,7 @@ function createHeart(){
 }
 setInterval(createHeart,800);
 
-/* -------- SCROLL FADE -------- */
+/* scroll fade */
 const observer=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
@@ -268,32 +295,27 @@ const observer=new IntersectionObserver(entries=>{
 },{threshold:0.3});
 observer.observe(document.querySelector(".heart-section"));
 
-/* -------- TIMER -------- */
+/* timer */
 let birthDate=new Date("February 28, 2004 23:50:00").getTime();
-
 function updateTimer(){
   let now=new Date().getTime();
   let diff=now-birthDate;
-
   let s=Math.floor(diff/1000)%60;
   let m=Math.floor(diff/(1000*60))%60;
   let h=Math.floor(diff/(1000*60*60))%24;
   let d=Math.floor(diff/(1000*60*60*24));
-
   document.getElementById("timer").innerHTML=
     d+" Days<br>"+h+" Hours<br>"+m+" Minutes<br>"+s+" Seconds";
 }
 setInterval(updateTimer,1000);
 updateTimer();
 
-/* -------- FIREWORKS -------- */
+/* fireworks */
 const canvas=document.getElementById("fireworksCanvas");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
-
 let particles=[];
-
 function createFirework(x,y){
   for(let i=0;i<80;i++){
     particles.push({
@@ -303,7 +325,6 @@ function createFirework(x,y){
     });
   }
 }
-
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   particles.forEach((p,i)=>{
@@ -323,5 +344,3 @@ animate();
 </script>
 </body>
 </html>
-
-
