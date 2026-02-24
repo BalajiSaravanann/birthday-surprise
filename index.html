@@ -41,7 +41,7 @@ body{
 #introVideo{
   width:100%;
   height:100%;
-  object-fit:contain; /* NO CROP */
+  object-fit:contain;
   background:black;
 }
 
@@ -58,14 +58,8 @@ body{
   transition:0.3s;
 }
 
-#startVideoBtn{
-  bottom:120px;
-}
-
-#enterBtn{
-  bottom:60px;
-  display:none;
-}
+#startVideoBtn{ bottom:120px; }
+#enterBtn{ bottom:60px; display:none; }
 
 #startVideoBtn:hover,
 #enterBtn:hover{
@@ -240,7 +234,6 @@ svg{
   <video id="introVideo" playsinline>
     <source src="intro.mp4" type="video/mp4">
   </video>
-
   <button id="startVideoBtn">Tap to Start 🎬</button>
   <button id="enterBtn">Tap the Screen 🤍</button>
 </div>
@@ -299,7 +292,7 @@ const enterBtn = document.getElementById("enterBtn");
 const introScreen = document.getElementById("introScreen");
 
 startVideoBtn.addEventListener("click",()=>{
-  introVideo.play(); // sound works
+  introVideo.play();
   startVideoBtn.style.display="none";
 });
 
@@ -361,15 +354,19 @@ function createHeart(){
 }
 setInterval(createHeart,800);
 
-/* Scroll animation */
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add("show");
-    }
-  });
-},{threshold:0.3});
-observer.observe(document.querySelector(".heart-section"));
+/* STRICT 100% BOTTOM SCROLL LOGIC */
+const heartSection=document.querySelector(".heart-section");
+
+window.addEventListener("scroll",()=>{
+  const scrollPosition=window.innerHeight + window.scrollY;
+  const pageHeight=document.documentElement.scrollHeight;
+
+  if(scrollPosition >= pageHeight - 2){
+    heartSection.classList.add("show");
+  }else{
+    heartSection.classList.remove("show");
+  }
+});
 
 /* Timer */
 let birthDate=new Date("February 28, 2004 23:50:00").getTime();
