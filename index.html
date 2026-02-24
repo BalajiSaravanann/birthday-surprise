@@ -16,8 +16,9 @@
 body{
   background:
     linear-gradient(135deg, rgba(111,107,220,0.6), rgba(139,130,230,0.6)),
-    url('background.png') no-repeat center center fixed;
+    url('background.png') no-repeat center center;
   background-size:cover;
+  background-attachment:scroll; /* FIXED REMOVED */
   color:white;
   overflow-x:hidden;
 }
@@ -41,7 +42,7 @@ body{
 #introVideo{
   width:100%;
   height:100%;
-  object-fit:contain; /* NO CROP */
+  object-fit:contain;
   background:black;
 }
 
@@ -58,14 +59,8 @@ body{
   transition:0.3s;
 }
 
-#startVideoBtn{
-  bottom:120px;
-}
-
-#enterBtn{
-  bottom:60px;
-  display:none;
-}
+#startVideoBtn{ bottom:120px; }
+#enterBtn{ bottom:60px; display:none; }
 
 #startVideoBtn:hover,
 #enterBtn:hover{
@@ -235,12 +230,10 @@ svg{
 
 <body>
 
-<!-- INTRO -->
 <div id="introScreen">
   <video id="introVideo" playsinline>
     <source src="intro.mp4" type="video/mp4">
   </video>
-
   <button id="startVideoBtn">Tap to Start 🎬</button>
   <button id="enterBtn">Tap the Screen 🤍</button>
 </div>
@@ -291,36 +284,34 @@ svg{
 
 <script>
 
-/* ---------- INTRO LOGIC ---------- */
+/* INTRO */
+const introVideo=document.getElementById("introVideo");
+const startVideoBtn=document.getElementById("startVideoBtn");
+const enterBtn=document.getElementById("enterBtn");
+const introScreen=document.getElementById("introScreen");
 
-const introVideo = document.getElementById("introVideo");
-const startVideoBtn = document.getElementById("startVideoBtn");
-const enterBtn = document.getElementById("enterBtn");
-const introScreen = document.getElementById("introScreen");
-
-startVideoBtn.addEventListener("click",()=>{
-  introVideo.play(); // sound works
+startVideoBtn.onclick=()=>{
+  introVideo.play();
   startVideoBtn.style.display="none";
-});
+};
 
-introVideo.addEventListener("ended",()=>{
+introVideo.onended=()=>{
   enterBtn.style.display="block";
-});
+};
 
-enterBtn.addEventListener("click",()=>{
+enterBtn.onclick=()=>{
   introScreen.style.display="none";
-});
+};
 
-/* ---------- MAIN LOGIC ---------- */
-
+/* MUSIC + TYPE */
 const music=document.getElementById("bgMusic");
 const playBtn=document.getElementById("playBtn");
 const typingElement=document.getElementById("typingText");
 const hint=document.getElementById("hintMessage");
 
-const message = `Thangachii, INIYA PIRANDHA NAAL NALVAZHTHUKAL. Daii, apro vera enna wish panradhunu thrla daa🤣.
-Ana na epaum solradhu dha daa; Ne epaum sandhosama smiley face oda iru,
-romba romba mukiyama healthy ah iru😌.
+const message=`Thangachii, INIYA PIRANDHA NAAL NALVAZHTHUKAL.
+Ne epaum sandhosama smiley face oda iru,
+romba mukiyama healthy ah iru😌.
 
 2026 Namadhey😌`;
 
@@ -328,16 +319,16 @@ let charIndex=0;
 let typingStarted=false;
 
 function typeWriter(){
-  if(charIndex < message.length){
-    typingElement.innerHTML += message.charAt(charIndex);
+  if(charIndex<message.length){
+    typingElement.innerHTML+=message.charAt(charIndex);
     charIndex++;
     setTimeout(typeWriter,120);
   }else{
-    typingElement.innerHTML += '<span class="cursor"></span>';
+    typingElement.innerHTML+='<span class="cursor"></span>';
   }
 }
 
-playBtn.addEventListener("click",()=>{
+playBtn.onclick=()=>{
   music.volume=0.6;
   music.play();
   playBtn.style.display="none";
@@ -347,31 +338,9 @@ playBtn.addEventListener("click",()=>{
     typingStarted=true;
     typeWriter();
   }
-});
+};
 
-/* Hearts */
-function createHeart(){
-  let h=document.createElement("div");
-  h.className="fall-heart";
-  h.innerHTML=Math.random()>0.5?"🖤":"🤍";
-  h.style.left=Math.random()*100+"vw";
-  h.style.animationDuration=(5+Math.random()*6)+"s";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),11000);
-}
-setInterval(createHeart,800);
-
-/* Scroll animation */
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add("show");
-    }
-  });
-},{threshold:0.3});
-observer.observe(document.querySelector(".heart-section"));
-
-/* Timer */
+/* TIMER */
 let birthDate=new Date("February 28, 2004 23:50:00").getTime();
 function updateTimer(){
   let now=new Date().getTime();
@@ -385,44 +354,6 @@ function updateTimer(){
 }
 setInterval(updateTimer,1000);
 updateTimer();
-
-/* Fireworks */
-const canvas=document.getElementById("fireworksCanvas");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-let particles=[];
-
-function createFirework(x,y){
-  for(let i=0;i<80;i++){
-    particles.push({
-      x,y,
-      angle:Math.random()*2*Math.PI,
-      speed:Math.random()*5+2
-    });
-  }
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach((p,i)=>{
-    p.x+=Math.cos(p.angle)*p.speed;
-    p.y+=Math.sin(p.angle)*p.speed;
-    p.speed*=0.96;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,2,0,Math.PI*2);
-    ctx.fillStyle="white";
-    ctx.fill();
-    if(p.speed<0.5)particles.splice(i,1);
-  });
-  requestAnimationFrame(animate);
-}
-
-canvas.addEventListener("click",(e)=>{
-  createFirework(e.clientX,e.clientY);
-});
-
-animate();
 
 </script>
 
