@@ -22,7 +22,7 @@ body{
   overflow-x:hidden;
 }
 
-/* ---------- INTRO SCREEN ---------- */
+/* ---------- INTRO ---------- */
 
 #introScreen{
   position:fixed;
@@ -41,7 +41,7 @@ body{
 #introVideo{
   width:100%;
   height:100%;
-  object-fit:contain; /* NO CROP */
+  object-fit:contain;
   background:black;
 }
 
@@ -55,22 +55,10 @@ body{
   backdrop-filter:blur(8px);
   color:white;
   cursor:pointer;
-  transition:0.3s;
 }
 
-#startVideoBtn{
-  bottom:120px;
-}
-
-#enterBtn{
-  bottom:60px;
-  display:none;
-}
-
-#startVideoBtn:hover,
-#enterBtn:hover{
-  background:rgba(255,255,255,0.4);
-}
+#startVideoBtn{ bottom:120px; }
+#enterBtn{ bottom:60px; display:none; }
 
 /* ---------- CARD ---------- */
 
@@ -86,12 +74,6 @@ body{
   animation:pop 1s ease;
 }
 
-.special{
-  font-size:13px;
-  letter-spacing:2px;
-  margin-bottom:8px;
-}
-
 @keyframes pop{
   from{transform:scale(0.9);opacity:0;}
   to{transform:scale(1);opacity:1;}
@@ -105,18 +87,6 @@ body{
   gap:8px;
 }
 
-#hintMessage{
-  margin-top:8px;
-  font-size:14px;
-  opacity:0.9;
-  transition:0.5s ease;
-}
-
-.fade-out{
-  opacity:0;
-  transform:translateY(-5px);
-}
-
 #typingText{
   margin-top:15px;
   white-space:pre-line;
@@ -128,24 +98,19 @@ body{
   display:inline-block;
   width:2px;
   background:white;
-  margin-left:4px;
   animation:blink 0.7s infinite;
 }
 
-@keyframes blink{
-  50%{opacity:0;}
-}
+@keyframes blink{50%{opacity:0;}}
 
 #playBtn{
-  margin:15px auto 0;
+  margin-top:15px;
   padding:10px 20px;
   border-radius:25px;
-  border:1px solid rgba(255,255,255,0.6);
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(8px);
+  border:none;
+  background:rgba(255,255,255,0.2);
   color:white;
   cursor:pointer;
-  font-size:14px;
 }
 
 /* ---------- HEART SECTION ---------- */
@@ -156,9 +121,10 @@ body{
   justify-content:center;
   align-items:center;
   position:relative;
+
   opacity:0;
   transform:translateY(80px);
-  transition:1.5s ease;
+  transition:1.2s ease;
 }
 
 .heart-section.show{
@@ -168,17 +134,11 @@ body{
 
 .heart-wrapper{
   position:relative;
-  width:420px;
-  height:380px;
-  animation:pulse 2s infinite;
-}
-
-@keyframes pulse{
-  50%{transform:scale(1.05);}
+  width:380px;
+  height:340px;
 }
 
 svg{
-  position:absolute;
   width:100%;
   height:100%;
 }
@@ -187,13 +147,6 @@ svg{
   fill:none;
   stroke:white;
   stroke-width:4;
-  stroke-dasharray:1500;
-  stroke-dashoffset:1500;
-  animation:draw 4s ease forwards;
-}
-
-@keyframes draw{
-  to{stroke-dashoffset:0;}
 }
 
 .timer-content{
@@ -205,30 +158,19 @@ svg{
 }
 
 #timer{
-  line-height:1.6;
   font-size:18px;
 }
 
+/* Falling hearts */
 .fall-heart{
   position:fixed;
   top:-20px;
   font-size:20px;
-  opacity:0.8;
   animation:fall linear infinite;
 }
 
 @keyframes fall{
-  to{transform:translateY(110vh) rotate(360deg);}
-}
-
-#fireworksCanvas{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:999;
+  to{transform:translateY(110vh);}
 }
 </style>
 </head>
@@ -240,20 +182,15 @@ svg{
   <video id="introVideo" playsinline>
     <source src="intro.mp4" type="video/mp4">
   </video>
-
   <button id="startVideoBtn">Tap to Start 🎬</button>
   <button id="enterBtn">Tap the Screen 🤍</button>
 </div>
-
-<canvas id="fireworksCanvas"></canvas>
 
 <audio id="bgMusic" loop>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <div class="card">
-  <div class="special">Special Wishes from AKB_ Fam</div>
-
   <h1 class="main-title">
     <span>🧚</span>
     <span>Happy Birthday Thangachii</span>
@@ -262,17 +199,13 @@ svg{
 
   <h2>Athifa Kouser A</h2>
 
-  <div id="hintMessage">
-    Enna da pakura, screen scroll panama play music button press panu 😅
-  </div>
-
   <p id="typingText"></p>
 
-  <p>Unakaga epaum na iurpen daa 🖤</p>
   <button id="playBtn">▶ Play Music</button>
 </div>
 
-<div class="heart-section">
+<!-- HEART TIMER -->
+<div class="heart-section" id="heartSection">
   <div class="heart-wrapper">
     <svg viewBox="0 0 512 512">
       <path class="heart-path"
@@ -291,87 +224,65 @@ svg{
 
 <script>
 
-/* ---------- INTRO LOGIC ---------- */
+/* INTRO LOGIC */
+const introVideo=document.getElementById("introVideo");
+const startVideoBtn=document.getElementById("startVideoBtn");
+const enterBtn=document.getElementById("enterBtn");
+const introScreen=document.getElementById("introScreen");
 
-const introVideo = document.getElementById("introVideo");
-const startVideoBtn = document.getElementById("startVideoBtn");
-const enterBtn = document.getElementById("enterBtn");
-const introScreen = document.getElementById("introScreen");
-
-startVideoBtn.addEventListener("click",()=>{
-  introVideo.play(); // sound works
+startVideoBtn.onclick=()=>{
+  introVideo.play();
   startVideoBtn.style.display="none";
-});
+};
 
-introVideo.addEventListener("ended",()=>{
+introVideo.onended=()=>{
   enterBtn.style.display="block";
-});
+};
 
-enterBtn.addEventListener("click",()=>{
+enterBtn.onclick=()=>{
   introScreen.style.display="none";
-});
+};
 
-/* ---------- MAIN LOGIC ---------- */
-
+/* MUSIC + MESSAGE */
 const music=document.getElementById("bgMusic");
 const playBtn=document.getElementById("playBtn");
 const typingElement=document.getElementById("typingText");
-const hint=document.getElementById("hintMessage");
 
-const message = `Thangachii, INIYA PIRANDHA NAAL NALVAZHTHUKAL. Daii, apro vera enna wish panradhunu thrla daa🤣.
-Ana na epaum solradhu dha daa; Ne epaum sandhosama smiley face oda iru,
-romba romba mukiyama healthy ah iru😌.
+const message=`Thangachii, INIYA PIRANDHA NAAL NALVAZHTHUKAL 🤍
+Ne epaum sandhosama iru.
+Healthy ah iru.
+2026 namadhey 😌`;
 
-2026 Namadhey😌`;
-
-let charIndex=0;
-let typingStarted=false;
-
+let i=0;
 function typeWriter(){
-  if(charIndex < message.length){
-    typingElement.innerHTML += message.charAt(charIndex);
-    charIndex++;
-    setTimeout(typeWriter,120);
-  }else{
-    typingElement.innerHTML += '<span class="cursor"></span>';
+  if(i<message.length){
+    typingElement.innerHTML+=message.charAt(i);
+    i++;
+    setTimeout(typeWriter,100);
   }
 }
 
-playBtn.addEventListener("click",()=>{
-  music.volume=0.6;
+playBtn.onclick=()=>{
   music.play();
+  typeWriter();
   playBtn.style.display="none";
-  hint.classList.add("fade-out");
-  setTimeout(()=>hint.style.display="none",500);
-  if(!typingStarted){
-    typingStarted=true;
-    typeWriter();
+};
+
+/* SCROLL CONTROL HEART */
+const heartSection=document.getElementById("heartSection");
+
+window.addEventListener("scroll",()=>{
+  const triggerPoint=window.innerHeight*0.8;
+  const heartTop=heartSection.getBoundingClientRect().top;
+
+  if(heartTop<triggerPoint){
+    heartSection.classList.add("show");
+  }else{
+    heartSection.classList.remove("show");
   }
 });
 
-/* Hearts */
-function createHeart(){
-  let h=document.createElement("div");
-  h.className="fall-heart";
-  h.innerHTML=Math.random()>0.5?"🖤":"🤍";
-  h.style.left=Math.random()*100+"vw";
-  h.style.animationDuration=(5+Math.random()*6)+"s";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),11000);
-}
-setInterval(createHeart,800);
-
-/* Scroll animation */
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add("show");
-    }
-  });
-},{threshold:0.3});
-observer.observe(document.querySelector(".heart-section"));
-
-/* Timer */
+/* TIMER */
 let birthDate=new Date("February 28, 2004 23:50:00").getTime();
 function updateTimer(){
   let now=new Date().getTime();
@@ -386,45 +297,18 @@ function updateTimer(){
 setInterval(updateTimer,1000);
 updateTimer();
 
-/* Fireworks */
-const canvas=document.getElementById("fireworksCanvas");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-let particles=[];
-
-function createFirework(x,y){
-  for(let i=0;i<80;i++){
-    particles.push({
-      x,y,
-      angle:Math.random()*2*Math.PI,
-      speed:Math.random()*5+2
-    });
-  }
+/* Falling Hearts */
+function createHeart(){
+  let h=document.createElement("div");
+  h.className="fall-heart";
+  h.innerHTML="🤍";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=(5+Math.random()*5)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),10000);
 }
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach((p,i)=>{
-    p.x+=Math.cos(p.angle)*p.speed;
-    p.y+=Math.sin(p.angle)*p.speed;
-    p.speed*=0.96;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,2,0,Math.PI*2);
-    ctx.fillStyle="white";
-    ctx.fill();
-    if(p.speed<0.5)particles.splice(i,1);
-  });
-  requestAnimationFrame(animate);
-}
-
-canvas.addEventListener("click",(e)=>{
-  createFirework(e.clientX,e.clientY);
-});
-
-animate();
+setInterval(createHeart,800);
 
 </script>
-
 </body>
 </html>
